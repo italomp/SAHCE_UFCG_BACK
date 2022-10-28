@@ -2,6 +2,7 @@ package com.sahce.ufcg.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import org.hibernate.usertype.UserType;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -27,15 +28,19 @@ public class MyUser {
     //@NotNull
     private byte[] documentPicture;
 
+    @NotNull
+    private UserType userType;
+
     public MyUser() {
     }
 
-    public MyUser(String name, String password, String adress, String email, String phone) {
+    public MyUser(String name, String password, String adress, String email, String phone, UserType userType) {
         this.name = name;
         this.password = password;
         this.adress = adress;
         this.email = email;
         this.phone = phone;
+        this.userType = userType;
     }
 
     public MyUser(String name, String password, String adress, String email, String phone, byte[] documentPicture) {
@@ -97,5 +102,17 @@ public class MyUser {
 
     public void setDocumentPicture(byte[] documentPicture) {
         this.documentPicture = documentPicture;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public enum UserType{
+        ADMIN, EXTERNAL_USER, INTERNAL_USER
     }
 }
