@@ -19,9 +19,15 @@ public class MyUserController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<MyUserDtoResponse> save(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.save(user), HttpStatus.OK);
+    }
+
+    @PutMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MyUserDtoResponse> activeUser(@RequestBody MyUserDtoRequest user){
+        return new ResponseEntity<>(service.activeUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/teste")

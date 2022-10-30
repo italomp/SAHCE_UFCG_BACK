@@ -2,11 +2,8 @@ package com.sahce.ufcg.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
-import org.hibernate.usertype.UserType;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class MyUser {
@@ -27,20 +24,23 @@ public class MyUser {
     private String phone;
     //@NotNull
     private byte[] documentPicture;
-
     @NotNull
     private UserType userType;
+    @NotNull
+    private Boolean active;
 
     public MyUser() {
     }
 
-    public MyUser(String name, String password, String adress, String email, String phone, UserType userType) {
+    public MyUser(String name, String password, String adress, String email,
+                  String phone, UserType userType, Boolean active) {
         this.name = name;
         this.password = password;
         this.adress = adress;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
+        this.active = active;
     }
 
     public MyUser(String name, String password, String adress, String email, String phone, byte[] documentPicture) {
@@ -72,7 +72,7 @@ public class MyUser {
         this.password = password;
     }
 
-    public String getAdress() {
+    public String getAddress() {
         return adress;
     }
 
@@ -112,6 +112,21 @@ public class MyUser {
         this.userType = userType;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public String toString(){
+        return
+                "id: " + this.id + " name: " + this.name + " email" +  this.email + " address" +
+                this.adress + " phone" +  this.phone + " password: " +   this.password + " userType: " +
+                this.userType + " status:" + this.active;
+    }
     public enum UserType{
         ADMIN, EXTERNAL_USER, INTERNAL_USER
     }
