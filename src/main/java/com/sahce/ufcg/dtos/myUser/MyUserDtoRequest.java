@@ -2,13 +2,15 @@ package com.sahce.ufcg.dtos.myUser;
 
 import com.sahce.ufcg.models.MyUser;
 
-public class MyUserDtoRequest {
+import java.io.Serializable;
+
+public class MyUserDtoRequest implements Serializable {
     private final String name;
     private final String password;
     private final String address;
     private final String email;
     private final String phone;
-    private final MyUser.UserType userType;
+    private MyUser.UserType userType;
     public MyUserDtoRequest(String name, String password, String address, String email, String phone, MyUser.UserType userType) {
         this.name = name;
         this.password = password;
@@ -16,6 +18,15 @@ public class MyUserDtoRequest {
         this.email = email;
         this.phone = phone;
         this.userType = userType;
+    }
+
+    public MyUserDtoRequest(){
+        this.name = null;
+        this.address = null;
+        this.phone = null;
+        this.email = null;
+        this.userType = null;
+        this.password = null;
     }
    
     public String getName() {

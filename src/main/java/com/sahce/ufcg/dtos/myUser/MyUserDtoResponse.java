@@ -3,7 +3,9 @@ package com.sahce.ufcg.dtos.myUser;
 
 import com.sahce.ufcg.models.MyUser;
 
-public class MyUserDtoResponse {
+import java.io.Serializable;
+
+public class MyUserDtoResponse implements Serializable {
     private final long id;
     private final String name;
     private final String address;

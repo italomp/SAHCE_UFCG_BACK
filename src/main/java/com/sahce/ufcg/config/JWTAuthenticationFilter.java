@@ -39,7 +39,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(
                             user.getEmail(),
                             user.getPassword(),
-                            new ArrayList<>()) //Essa lista de authorities vazia tá ok msm?
+                            new ArrayList<>()) // Lista com as authorities necessárias para realizar o login
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
