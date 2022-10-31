@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1")
 public class MyUserController {
     @Autowired
     private MyUserService service;
@@ -18,20 +18,17 @@ public class MyUserController {
     public MyUserController() {
     }
 
-    @PostMapping("/")
-    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/users")
     public ResponseEntity<MyUserDtoResponse> save(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.save(user), HttpStatus.OK);
     }
 
-    @PutMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/users")
     public ResponseEntity<MyUserDtoResponse> activeUser(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.activeUser(user), HttpStatus.OK);
     }
 
-    @GetMapping("/teste")
-    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/protected/users/teste")
     public ResponseEntity<HttpStatus> teste(){
         return new ResponseEntity<>(HttpStatus.OK);
     }
