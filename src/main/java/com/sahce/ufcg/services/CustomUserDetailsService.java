@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,13 +27,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         MyUser user = repository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("Não há usuário cadastrado com esse email"));
+        List<GrantedAuthority> adminAuthoritiesList = getAuthList(user);
+        return new User( user.getEmail(), user.getPassword(), adminAuthoritiesList);
+    }
 
+    public List<GrantedAuthority> getAuthList(MyUser user){
+        List<GrantedAuthority> anonymousAuthoritiesList = new ArrayList<>();
         List<GrantedAuthority> userAuthoritiesList = AuthorityUtils.createAuthorityList("ROLE_USER");
         List<GrantedAuthority> adminAuthoritiesList = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
 
-        return new User(
-                user.getEmail(),
-                user.getPassword(),
-                user.getUserType() == MyUser.UserType.ADMIN ? adminAuthoritiesList : userAuthoritiesList);
+        if(!user.getActive()) return anonymousAuthoritiesList;
+        if(user.getUserType() == MyUser.UserType.ADMIN) return adminAuthoritiesList;
+        return userAuthoritiesList;
     }
 }
