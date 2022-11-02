@@ -7,7 +7,9 @@ import com.sahce.ufcg.services.CustomUserDetailsService;
 import com.sahce.ufcg.services.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,8 +39,17 @@ public class MyUserController {
     }
 
     @PostMapping("/anonymous/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody MyUserDtoLogin user){
+    public ResponseEntity<MyUserDtoLogin> login(@RequestBody MyUserDtoLogin user){
         return (service.login(user.getEmail(), user.getPassword()) != null) ?
-         new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            new ResponseEntity<>(new MyUserDtoLogin(user.getEmail(), user.getPassword()), HttpStatus.OK) :
+            new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
+
+//    @PostMapping(path = "/anonymous/login", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+//    public ResponseEntity<HttpStatus> login(@RequestParam MultiValueMap<String,String> paramMap){
+//        String email = paramMap.getFirst("username");
+//        String password = paramMap.getFirst("password");
+//        return (service.login(email, password) != null) ?
+//                new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//    }
 }
