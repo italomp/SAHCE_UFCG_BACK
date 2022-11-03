@@ -17,7 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception{
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers("/*/users").permitAll()
+                .antMatchers("/*/anonymous/**", "/login").permitAll()
                 .antMatchers("/*/protected/**").hasRole("USER")  //Essas rotas inda não existem
                 .antMatchers("/*/admin/**").hasRole("ADMIN")
                 .and()
