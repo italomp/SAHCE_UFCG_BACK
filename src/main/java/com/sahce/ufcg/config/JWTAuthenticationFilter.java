@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import static com.sahce.ufcg.config.SecurityConstants.*;
@@ -57,7 +58,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
-        res.addHeader(AUTHORITIES_HEADER, ((User) auth.getPrincipal()).getAuthorities().toString());
+
+        String authorities = ((User) auth.getPrincipal()).getAuthorities()
+                .stream()
+                .map(authority -> authority.getAuthority().toString())
+                .reduce("", (subTotal, element) -> subTotal + "," + element);
+
+        res.addHeader(AUTHORITIES_HEADER, authorities);
         res.addHeader(AUTHORIZATION_HEADER, TOKEN_PREFIX + token);
     }
 }
