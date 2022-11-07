@@ -7,7 +7,10 @@ import com.sahce.ufcg.models.MyUser;
 import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.util.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MyUserService {
@@ -52,5 +55,18 @@ public class MyUserService {
                 savedUser.getEmail(),
                 savedUser.getPhone(),
                 savedUser.getUserType());
+    }
+
+    public MyUserDtoResponse getUserByEmail(String email){
+        MyUser user = repository.findByEmail(email).orElseThrow(
+                () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
+
+        return new MyUserDtoResponse(
+                user.getId(),
+                user.getName(),
+                user.getAddress(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getUserType());
     }
 }
