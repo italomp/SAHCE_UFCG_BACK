@@ -2,6 +2,7 @@
 package com.sahce.ufcg.dtos.myUser;
 
 import com.sahce.ufcg.models.MyUser;
+import com.sahce.ufcg.models.MyUser.UserType;
 
 import java.io.Serializable;
 

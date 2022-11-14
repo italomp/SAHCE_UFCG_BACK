@@ -127,6 +127,7 @@ public class MyUser {
                 this.adress + " phone" +  this.phone + " password: " +   this.password + " userType: " +
                 this.userType + " status:" + this.active;
     }
+
     public enum UserType{
         ADMIN, EXTERNAL_USER, INTERNAL_USER
     }
