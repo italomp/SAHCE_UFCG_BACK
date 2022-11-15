@@ -12,10 +12,11 @@ public class Place implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @NotNull
+    @Column(unique = true)
     private String name;
     @NotNull
     @ElementCollection(targetClass= MyUser.UserType.class)
-    @Enumerated(EnumType.ORDINAL) // Possibly optional (I'm not sure) but defaults to ORDINAL.
+    @Enumerated(EnumType.ORDINAL)
     private List<MyUser.UserType> authorizedUsers;
 
     public Place(){}

@@ -5,10 +5,9 @@ import com.sahce.ufcg.services.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
@@ -19,5 +18,10 @@ public class PlaceController {
     @PostMapping("/admin/places")
     public ResponseEntity<HttpStatus> save(@RequestBody Place place){
         return new ResponseEntity<>(service.save(place));
+    }
+
+    @GetMapping("/admin/places")
+    public ResponseEntity<List<Place>> getAll(){
+        return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 }
