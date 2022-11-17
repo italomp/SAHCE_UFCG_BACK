@@ -1,6 +1,7 @@
 package com.sahce.ufcg.models;
 
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class Place implements Serializable {
     @NotNull
     @ElementCollection(targetClass= MyUser.UserType.class)
     @Enumerated(EnumType.ORDINAL)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<MyUser.UserType> authorizedUsers;
 
     public Place(){}
