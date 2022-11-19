@@ -2,8 +2,11 @@ package com.sahce.ufcg.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class MyUser {
@@ -15,7 +18,7 @@ public class MyUser {
     @NotNull
     @JsonIgnore
     private String password;
-    private String adress;
+    private String address;
     @NotNull
     @Column(unique = true)
     private String email;
@@ -29,27 +32,33 @@ public class MyUser {
     @NotNull
     private Boolean active;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", orphanRemoval = true)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Schedule> schedules;
+
     public MyUser() {
     }
 
-    public MyUser(String name, String password, String adress, String email,
+    public MyUser(String name, String password, String address, String email,
                   String phone, UserType userType, Boolean active) {
         this.name = name;
         this.password = password;
-        this.adress = adress;
+        this.address = address;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
         this.active = active;
+        this.schedules = new ArrayList<>();
     }
 
-    public MyUser(String name, String password, String adress, String email, String phone, byte[] documentPicture) {
+    public MyUser(String name, String password, String address, String email, String phone, byte[] documentPicture) {
         this.name = name;
         this.password = password;
-        this.adress = adress;
+        this.address = address;
         this.email = email;
         this.phone = phone;
         this.documentPicture = documentPicture;
+        this.schedules = new ArrayList<>();
     }
 
     public long getId() {
@@ -73,11 +82,11 @@ public class MyUser {
     }
 
     public String getAddress() {
-        return adress;
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getEmail() {
@@ -120,11 +129,19 @@ public class MyUser {
         this.active = active;
     }
 
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
     @Override
     public String toString(){
         return
                 "id: " + this.id + " name: " + this.name + " email" +  this.email + " address" +
-                this.adress + " phone" +  this.phone + " password: " +   this.password + " userType: " +
+                this.address + " phone" +  this.phone + " password: " +   this.password + " userType: " +
                 this.userType + " status:" + this.active;
     }
 

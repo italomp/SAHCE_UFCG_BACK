@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,11 +22,16 @@ public class Place implements Serializable {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<MyUser.UserType> authorizedUsers;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "place", orphanRemoval = true)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Schedule> schedules;
+
     public Place(){}
 
     public Place(String name, List<MyUser.UserType> authorizedUsers){
         this.name = name;
         this.authorizedUsers = authorizedUsers;
+        this.schedules = new ArrayList<>();
     }
 
     public long getId() {
@@ -46,5 +52,13 @@ public class Place implements Serializable {
 
     public void setAuthorizedUsers(List<MyUser.UserType> authorizedUsers) {
         this.authorizedUsers = authorizedUsers;
+    }
+
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 }
