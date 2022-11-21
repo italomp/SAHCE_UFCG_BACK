@@ -1,5 +1,6 @@
 package com.sahce.ufcg.controllers;
 
+import com.sahce.ufcg.dtos.place.PlaceResponseDto;
 import com.sahce.ufcg.models.Place;
 import com.sahce.ufcg.services.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class PlaceController {
     }
 
     @GetMapping("/admin/places")
-    public ResponseEntity<List<Place>> getAll(){
+    public ResponseEntity<List<PlaceResponseDto>> getAll(){
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 }
