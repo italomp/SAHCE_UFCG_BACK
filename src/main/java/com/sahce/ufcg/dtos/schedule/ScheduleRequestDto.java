@@ -1,7 +1,11 @@
 package com.sahce.ufcg.dtos.schedule;
 
+import com.sun.istack.NotNull;
+
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class ScheduleRequestDto {
     private LocalDate initialDate;
@@ -11,12 +15,15 @@ public class ScheduleRequestDto {
     private String ownerEmail;
     private String placeName;
 
+    private List<DayOfWeek> daysOfWeek;
+
     public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, LocalTime initialTime,
-                              LocalTime finalTime, String ownerEmail, String placeName) {
+                              LocalTime finalTime, List<DayOfWeek> daysOfWeek, String ownerEmail, String placeName) {
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.initialTime = initialTime;
         this.finalTime = finalTime;
+        this.daysOfWeek = daysOfWeek;
         this.ownerEmail = ownerEmail;
         this.placeName = placeName;
     }
@@ -70,5 +77,13 @@ public class ScheduleRequestDto {
 
     public void setFinalTime(LocalTime finalTime) {
         this.finalTime = finalTime;
+    }
+
+    public List<DayOfWeek> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
     }
 }

@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 
 @Service
 public class ScheduleService {
@@ -21,32 +24,53 @@ public class ScheduleService {
     private PlaceRepository placeRepository;
 
     public HttpStatus save(ScheduleRequestDto dto){
-        Place place = placeRepository.findByName(dto.getPlaceName())
-                .orElseThrow(() -> new PlaceNotRegisteredException("Não há espaços registrados com esse nome"));
+        Place place = placeRepository.findByName(dto.getPlaceName()).orElseThrow(
+                () -> new PlaceNotRegisteredException("Não há espaços registrados com esse nome"));
         Schedule newSchedule = new Schedule(
-                place, dto.getInitialDate(), dto.getFinalDate(), dto.getInitialTime(), dto.getFinalTime());
+                place,
+                dto.getInitialDate(),
+                dto.getFinalDate(),
+                dto.getInitialTime(),
+                dto.getFinalTime(),
+                dto.getDaysOfWeek());
         checkIfThisScheduleAlreadyExist(newSchedule);
-        Schedule savedSchedule = scheduleRespository.save(newSchedule);
-        if(savedSchedule == null){
-            throw new PersistenceException("Erro ao salvar espaço");
-        }
+        checkConflicts(newSchedule);
+        scheduleRespository.save(newSchedule);
         return HttpStatus.OK;
     }
 
     public void checkIfThisScheduleAlreadyExist(Schedule schedule){
-        System.out.println(schedule.getInitialDate());
-        System.out.println(schedule.getFinalDate());
-        System.out.println(schedule.getInitialTime());
-        System.out.println(schedule.getFinalTime());
-        System.out.println(schedule.getPlace().getId());
-        Schedule possibleExistentSchedule = scheduleRespository.checkIfThisScheduleExist(
-                schedule.getInitialDate(),
-                schedule.getFinalDate(),
-                schedule.getInitialTime(),
-                schedule.getFinalTime(),
-                schedule.getPlace().getId());
-        if(schedule.equals(possibleExistentSchedule)){
-            throw new ScheduleAlreadyRegistered("Esse horário já exite.");
-        }
+        schedule.getDaysOfWeek().stream().forEach(
+                dayOfWeek -> {
+                    Schedule possibleExistentSchedule = scheduleRespository.checkIfThisScheduleExist(
+                            schedule.getInitialDate(),
+                            schedule.getFinalDate(),
+                            schedule.getInitialTime(),
+                            schedule.getFinalTime(),
+                            schedule.getPlace().getId(),
+                            dayOfWeek.ordinal());
+                    if(schedule.equals(possibleExistentSchedule)){
+                        throw new ScheduleAlreadyRegistered("Esse horário já exite.");
+                    }
+                }
+        );
     }
+
+    public void checkConflicts(Schedule schedule){
+        schedule.getDaysOfWeek().stream().forEach(
+                dayOfWeek -> {
+                    Schedule existentSchedule = scheduleRespository.checkConflict(
+                            schedule.getInitialDate(),
+                            schedule.getFinalDate(),
+                            schedule.getInitialTime(),
+                            schedule.getFinalTime(),
+                            schedule.getPlace().getId(),
+                            dayOfWeek.ordinal()
+                    );
+                    if(existentSchedule != null)
+                        throw new ScheduleAlreadyRegistered("Conflito com horário existente.");
+                }
+        );
+    }
+
 }

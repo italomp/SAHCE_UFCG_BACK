@@ -1,11 +1,15 @@
 package com.sahce.ufcg.models;
 
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -34,19 +38,25 @@ public class Schedule implements Serializable {
     private MyUser owner;
     @NotNull
     private boolean disponibol;
-
-    // DIAS DA SEMANA - lista com os dias da semana
-
+    @NotNull
+    @ElementCollection(targetClass= DayOfWeek.class)
+    @Enumerated(EnumType.ORDINAL)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<DayOfWeek> daysOfWeek;
+    @NotNull
+    private boolean deprecated;
 
     public Schedule(Place place, LocalDate initialDate, LocalDate finalDate, LocalTime initialTime,
-                    LocalTime finalTime) {
+                    LocalTime finalTime, List<DayOfWeek> daysOfWeek) {
         this.place = place;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.initialTime = initialTime;
         this.finalTime = finalTime;
+        this.daysOfWeek = daysOfWeek;
         this.owner = null;
         this.disponibol = true;
+        this.deprecated = false;
     }
 
     public Schedule() {
@@ -120,6 +130,22 @@ public class Schedule implements Serializable {
         this.finalTime = finalTime;
     }
 
+    public List<DayOfWeek> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+    }
+
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -127,11 +153,11 @@ public class Schedule implements Serializable {
         Schedule schedule = (Schedule) o;
         return place.equals(schedule.place) && initialDate.equals(schedule.initialDate) &&
                 finalDate.equals(schedule.finalDate) && initialTime.equals(schedule.initialTime) &&
-                finalTime.equals(schedule.finalTime);
+                finalTime.equals(schedule.finalTime) && daysOfWeek.equals(schedule.daysOfWeek);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(place, initialDate, finalDate, initialTime, finalTime);
+        return Objects.hash(place, initialDate, finalDate, initialTime, finalTime, daysOfWeek);
     }
 }
