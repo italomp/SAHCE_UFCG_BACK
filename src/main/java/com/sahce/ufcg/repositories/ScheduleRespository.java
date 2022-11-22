@@ -6,10 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Repository
 public interface ScheduleRespository extends JpaRepository<Schedule, Long> {
@@ -42,47 +40,37 @@ public interface ScheduleRespository extends JpaRepository<Schedule, Long> {
 	 * ((mesmo dia e mesmo horário) AND (periodStartNovo <= periodStartVelho <= periodEndNovo))
 	 * OR
 	 * ((mesmo dia e mesmo horário) AND (periodStartNovo <= periodEndVelho <= periodEndNovo))
+	 *
+	 * OBS: A query está simplificada (matematicamente/logicamente falando).
      * */
     @Query(value =
             "SELECT *" +
             "FROM schedule, schedule_days_of_week " +
             "WHERE (id = schedule_id " +
             "AND place_id = :pPlaceId) " +
-
-            "AND (" +
+            "AND " +
                 /* mesmo dia e mesmo horário */
                 "(days_of_week = :pDayOfWeek " +
                 "AND initial_time = :pInitialTime " +
-                "AND final_time = :pFinalTime " +
+                "AND final_time = :pFinalTime) " +
+            "AND (" +
                 /* periodStartVelho <= periodStartNovo <= periodEndVelho */
-                "AND initial_date <= :pInitialDate " +
+                "(initial_date <= :pInitialDate " +
                 "AND final_date >= :pInitialDate) " +
-
                 "OR " +
-                    /* mesmo dia e mesmo horário */
-                    "(days_of_week = :pDayOfWeek " +
-                    "AND initial_time = :pInitialTime " +
-                    "AND final_time = :pFinalTime " +
                     /* periodStartVelho <= periodEndNovo <= periodEndVelho */
-                    "AND initial_date <= :pFinalDate " +
+                    "(initial_date <= :pFinalDate " +
                     "AND final_date >= :pFinalDate) " +
-
                 "OR " +
-                    "(days_of_week = :pDayOfWeek " +
-                    "AND initial_time = :pInitialTime " +
-                    "AND final_time = :pFinalTime " +
                     /* periodStartNovo <= periodStartVelho <= periodEndNovo */
-                    "AND initial_date >= :pInitialDate " +
+                    "(initial_date >= :pInitialDate " +
                     "AND initial_date <= :pFinalDate) "  +
-
                 "OR " +
-                    "(days_of_week = :pDayOfWeek " +
-                    "AND initial_time = :pInitialTime " +
-                    "AND final_time = :pFinalTime " +
                     /* periodStartNovo <= periodEndVelho <= periodEndNovo */
-                    "AND final_date >= :pInitialDate " +
+                    "(final_date >= :pInitialDate " +
                     "AND final_date <= :pFinalDate)" +
-            ")", nativeQuery = true)
+            ")",
+    nativeQuery = true)
     Schedule checkConflict(
             @Param("pInitialDate") LocalDate initialDate,
             @Param("pFinalDate") LocalDate finalDate,

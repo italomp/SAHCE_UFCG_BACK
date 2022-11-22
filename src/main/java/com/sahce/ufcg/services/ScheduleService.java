@@ -1,7 +1,6 @@
 package com.sahce.ufcg.services;
 
 import com.sahce.ufcg.dtos.schedule.ScheduleRequestDto;
-import com.sahce.ufcg.exceptions.PersistenceException;
 import com.sahce.ufcg.exceptions.PlaceNotRegisteredException;
 import com.sahce.ufcg.exceptions.ScheduleAlreadyRegistered;
 import com.sahce.ufcg.models.Place;
@@ -11,10 +10,6 @@ import com.sahce.ufcg.repositories.ScheduleRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
-
 
 @Service
 public class ScheduleService {

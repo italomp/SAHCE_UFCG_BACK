@@ -1,6 +1,5 @@
 package com.sahce.ufcg.dtos.schedule;
 
-import com.sun.istack.NotNull;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
