@@ -1,30 +1,36 @@
 package com.sahce.ufcg.dtos.schedule;
 
 
+import com.sahce.ufcg.models.TimesByDay;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Map;
 
 public class ScheduleRequestDto {
     private LocalDate initialDate;
     private LocalDate finalDate;
-    private LocalTime initialTime;
-    private LocalTime finalTime;
-    private String ownerEmail;
     private String placeName;
+    private String ownerEmail;
+    private Map<DayOfWeek, TimesByDay> timesByDayMap;
 
-    private List<DayOfWeek> daysOfWeek;
-
-    public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, LocalTime initialTime,
-                              LocalTime finalTime, List<DayOfWeek> daysOfWeek, String ownerEmail, String placeName) {
+    public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, Map<DayOfWeek,
+            TimesByDay> timesByDayMap, String placeName, String ownerEmail) {
         this.initialDate = initialDate;
         this.finalDate = finalDate;
-        this.initialTime = initialTime;
-        this.finalTime = finalTime;
-        this.daysOfWeek = daysOfWeek;
-        this.ownerEmail = ownerEmail;
+        this.timesByDayMap = timesByDayMap;
         this.placeName = placeName;
+        this.ownerEmail = ownerEmail;
+    }
+
+    public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, Map<DayOfWeek,
+            TimesByDay> timesByDayMap, String placeName) {
+        this.initialDate = initialDate;
+        this.finalDate = finalDate;
+        this.timesByDayMap = timesByDayMap;
+        this.placeName = placeName;
+        this.ownerEmail = null;
     }
 
     public ScheduleRequestDto() {
@@ -62,27 +68,13 @@ public class ScheduleRequestDto {
         this.placeName = placeName;
     }
 
-    public LocalTime getInitialTime() {
-        return initialTime;
+    public Map<DayOfWeek, TimesByDay> getTimesByDayMap() {
+        return timesByDayMap;
     }
 
-    public void setInitialTime(LocalTime initialTime) {
-        this.initialTime = initialTime;
+    public void setTimesByDayMap(Map<DayOfWeek, TimesByDay> timesByDayMap) {
+        this.timesByDayMap = timesByDayMap;
     }
 
-    public LocalTime getFinalTime() {
-        return finalTime;
-    }
 
-    public void setFinalTime(LocalTime finalTime) {
-        this.finalTime = finalTime;
-    }
-
-    public List<DayOfWeek> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
 }

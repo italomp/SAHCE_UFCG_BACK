@@ -8,8 +8,7 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /*
@@ -29,32 +28,25 @@ public class Schedule implements Serializable {
     private LocalDate initialDate;
     @NotNull
     private LocalDate finalDate;
-    @NotNull
-    private LocalTime initialTime;
-    @NotNull
-    private LocalTime finalTime;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private MyUser owner;
+    private MyUser ownerEmail;
     @NotNull
     private boolean disponibol;
     @NotNull
-    @ElementCollection(targetClass= DayOfWeek.class)
-    @Enumerated(EnumType.ORDINAL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<DayOfWeek> daysOfWeek;
+    private Map<DayOfWeek, TimesByDay> timesByDayMap;
     @NotNull
     private boolean deprecated;
 
-    public Schedule(Place place, LocalDate initialDate, LocalDate finalDate, LocalTime initialTime,
-                    LocalTime finalTime, List<DayOfWeek> daysOfWeek) {
+    public Schedule(Place place, LocalDate initialDate, LocalDate finalDate,
+                    Map<DayOfWeek, TimesByDay> timesByDayMap) {
         this.place = place;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
-        this.initialTime = initialTime;
-        this.finalTime = finalTime;
-        this.daysOfWeek = daysOfWeek;
-        this.owner = null;
+        this.timesByDayMap = timesByDayMap;
+        this.ownerEmail = null;
         this.disponibol = true;
         this.deprecated = false;
     }
@@ -90,12 +82,12 @@ public class Schedule implements Serializable {
         this.finalDate = finalDate;
     }
 
-    public MyUser getOwner() {
-        return owner;
+    public MyUser getOwnerEmail() {
+        return ownerEmail;
     }
 
-    public void setOwner(MyUser owner) {
-        this.owner = owner;
+    public void setOwnerEmail(MyUser ownerEmail) {
+        this.ownerEmail = ownerEmail;
     }
 
     public boolean isDisponibol() {
@@ -114,30 +106,6 @@ public class Schedule implements Serializable {
         this.place = place;
     }
 
-    public LocalTime getInitialTime() {
-        return initialTime;
-    }
-
-    public void setInitialTime(LocalTime initialTime) {
-        this.initialTime = initialTime;
-    }
-
-    public LocalTime getFinalTime() {
-        return finalTime;
-    }
-
-    public void setFinalTime(LocalTime finalTime) {
-        this.finalTime = finalTime;
-    }
-
-    public List<DayOfWeek> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
-
     public boolean isDeprecated() {
         return deprecated;
     }
@@ -146,18 +114,25 @@ public class Schedule implements Serializable {
         this.deprecated = deprecated;
     }
 
+    public Map<DayOfWeek, TimesByDay> getTimesByDayMap() {
+        return timesByDayMap;
+    }
+
+    public void setTimesByDayMap(Map<DayOfWeek, TimesByDay> timesByDayMap) {
+        this.timesByDayMap = timesByDayMap;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
         return place.equals(schedule.place) && initialDate.equals(schedule.initialDate) &&
-                finalDate.equals(schedule.finalDate) && initialTime.equals(schedule.initialTime) &&
-                finalTime.equals(schedule.finalTime) && daysOfWeek.equals(schedule.daysOfWeek);
+                finalDate.equals(schedule.finalDate) && timesByDayMap.equals(schedule.timesByDayMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(place, initialDate, finalDate, initialTime, finalTime, daysOfWeek);
+        return Objects.hash(place, initialDate, finalDate, timesByDayMap);
     }
 }
