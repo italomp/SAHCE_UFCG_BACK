@@ -1,5 +1,10 @@
 package com.sahce.ufcg.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.sahce.ufcg.util.LocalTimeDeserializer;
+import com.sahce.ufcg.util.LocalTimeSerializer;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
@@ -15,12 +20,17 @@ public class TimesByDay implements Serializable {
     @NotNull
     private DayOfWeek day;
     @NotNull
+    @JsonSerialize(using = LocalTimeSerializer.class)
+    @JsonDeserialize(using = LocalTimeDeserializer.class)
     private LocalTime initialTime;
     @NotNull
+    @JsonSerialize(using = LocalTimeSerializer.class)
+    @JsonDeserialize(using = LocalTimeDeserializer.class)
     private LocalTime finalTime;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "schedule_id")
+    @JsonBackReference
     private Schedule schedule;
 
     public TimesByDay(DayOfWeek day, LocalTime initialTime, LocalTime finalTime) {

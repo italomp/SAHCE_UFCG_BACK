@@ -22,7 +22,7 @@ public class Place implements Serializable {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<MyUser.UserType> authorizedUsers;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "place", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "place", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Schedule> schedules;
 

@@ -1,20 +1,15 @@
 package com.sahce.ufcg.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
-/*
-* Os horários repetem-se N dias por semana durante um período definido pelo usuário admin.
-* Esse período pode ser, por exemplo: uma semana, um mês, um semestre, um ano, etc.
-* */
 @Entity
 public class Schedule implements Serializable {
     @Id
@@ -32,22 +27,23 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "owner_id")
     private MyUser ownerEmail;
     @NotNull
-    private boolean disponibol;
+    private boolean disponible;
     @NotNull
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Map<DayOfWeek, TimesByDay> timesByDayMap;
+    @JsonManagedReference
+    private List<TimesByDay> timesByDayList;
     @NotNull
     private boolean deprecated;
 
     public Schedule(Place place, LocalDate initialDate, LocalDate finalDate,
-                    Map<DayOfWeek, TimesByDay> timesByDayMap) {
+                    List<TimesByDay> timesByDayList) {
         this.place = place;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
-        this.timesByDayMap = timesByDayMap;
+        this.timesByDayList = timesByDayList;
         this.ownerEmail = null;
-        this.disponibol = true;
+        this.disponible = true;
         this.deprecated = false;
     }
 
@@ -56,14 +52,6 @@ public class Schedule implements Serializable {
 
     public long getId() {
         return id;
-    }
-
-    public Place getPlaceName() {
-        return place;
-    }
-
-    public void setPlaceName(Place placeName) {
-        this.place = place;
     }
 
     public LocalDate getInitialDate() {
@@ -90,12 +78,12 @@ public class Schedule implements Serializable {
         this.ownerEmail = ownerEmail;
     }
 
-    public boolean isDisponibol() {
-        return disponibol;
+    public boolean isDisponible() {
+        return disponible;
     }
 
-    public void setDisponibol(boolean disponibol) {
-        this.disponibol = disponibol;
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
     }
 
     public Place getPlace() {
@@ -114,12 +102,12 @@ public class Schedule implements Serializable {
         this.deprecated = deprecated;
     }
 
-    public Map<DayOfWeek, TimesByDay> getTimesByDayMap() {
-        return timesByDayMap;
+    public List<TimesByDay> getTimesByDayList() {
+        return timesByDayList;
     }
 
-    public void setTimesByDayMap(Map<DayOfWeek, TimesByDay> timesByDayMap) {
-        this.timesByDayMap = timesByDayMap;
+    public void setTimesByDayList(List<TimesByDay> timesByDayList) {
+        this.timesByDayList = timesByDayList;
     }
 
     @Override
@@ -128,11 +116,11 @@ public class Schedule implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
         return place.equals(schedule.place) && initialDate.equals(schedule.initialDate) &&
-                finalDate.equals(schedule.finalDate) && timesByDayMap.equals(schedule.timesByDayMap);
+                finalDate.equals(schedule.finalDate) && timesByDayList.equals(schedule.timesByDayList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(place, initialDate, finalDate, timesByDayMap);
+        return Objects.hash(place, initialDate, finalDate, timesByDayList);
     }
 }

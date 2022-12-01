@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 public interface ScheduleRespository extends JpaRepository<Schedule, Long> {
@@ -79,4 +80,10 @@ public interface ScheduleRespository extends JpaRepository<Schedule, Long> {
             @Param("pPlaceId") Long placeId,
             @Param("pDayOfWeek") int dayOfWeekList
     );
+
+    @Query(value =
+            "SELECT id, deprecated, disponible, initial_date, final_date, owner_id, place_id " +
+            "FROM schedule s, place p " +
+            "WHERE s.place_id = p.id AND P.name = :pPlaceName", nativeQuery = true)
+    List<Schedule> findByPlaceName(@Param("pPlaceName") String placeName);
 }

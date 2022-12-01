@@ -3,17 +3,17 @@ package com.sahce.ufcg.dtos.schedule;
 
 import com.sahce.ufcg.models.TimesByDay;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Map;
 
-public class ScheduleRequestDto {
-    private LocalDate initialDate;
-    private LocalDate finalDate;
+public class ScheduleRequestDto implements Serializable {
+    private transient LocalDate initialDate;
+    private transient LocalDate finalDate;
     private String placeName;
     private String ownerEmail;
-    private Map<DayOfWeek, TimesByDay> timesByDayMap;
+    private  Map<DayOfWeek, TimesByDay> timesByDayMap;
 
     public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, Map<DayOfWeek,
             TimesByDay> timesByDayMap, String placeName, String ownerEmail) {
@@ -75,6 +75,4 @@ public class ScheduleRequestDto {
     public void setTimesByDayMap(Map<DayOfWeek, TimesByDay> timesByDayMap) {
         this.timesByDayMap = timesByDayMap;
     }
-
-
 }

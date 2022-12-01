@@ -1,14 +1,14 @@
 package com.sahce.ufcg.controllers;
 
 import com.sahce.ufcg.dtos.schedule.ScheduleRequestDto;
+import com.sahce.ufcg.dtos.schedule.ScheduleResponseDto;
 import com.sahce.ufcg.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
@@ -21,4 +21,11 @@ public class ScheduleController {
         service.save(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/admin/schedules")
+    public ResponseEntity<List<ScheduleResponseDto>> getAll(@RequestParam("placeName") String placeName){
+        System.out.println(placeName);
+        return new ResponseEntity<>(service.getAllByName(placeName), HttpStatus.OK);
+    }
+
 }
