@@ -82,6 +82,8 @@ public class ScheduleService {
         List<ScheduleResponseDto> dtoList = new ArrayList<>();
         scheduleList.forEach(
                 schedule -> {
+                    String scheduleName = schedule.getPlace().getName().toLowerCase();
+                    if(!placeName.toLowerCase().equals(scheduleName)) return;
                     List<TimesByDay> timesByDayList = schedule.getTimesByDayList();
                     timesByDayList.sort(new TimesByDayComparator());
                     dtoList.add(new ScheduleResponseDto(
