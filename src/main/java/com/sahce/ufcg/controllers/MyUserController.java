@@ -1,6 +1,6 @@
 package com.sahce.ufcg.controllers;
 
-import com.sahce.ufcg.dtos.myUser.MyUserDtoResponse;
+import com.sahce.ufcg.dtos.myUser.MyUserResponseDto;
 import com.sahce.ufcg.dtos.myUser.MyUserDtoRequest;
 import com.sahce.ufcg.services.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +21,22 @@ public class MyUserController {
     }
 
     @PostMapping("/anonymous/users")
-    public ResponseEntity<MyUserDtoResponse> save(@RequestBody MyUserDtoRequest user){
+    public ResponseEntity<MyUserResponseDto> save(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.save(user), HttpStatus.OK);
     }
 
     @PutMapping("/admin/users")
-    public ResponseEntity<MyUserDtoResponse> activeUser(@RequestBody MyUserDtoRequest user){
+    public ResponseEntity<MyUserResponseDto> activeUser(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.activeUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/protected/users/{email}")
-    public ResponseEntity<MyUserDtoResponse> getAuthoritiesByUser(@PathVariable String email){
+    public ResponseEntity<MyUserResponseDto> getAuthoritiesByUser(@PathVariable String email){
         return new ResponseEntity<>(service.getUserByEmail(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/users/inactive")
+    public ResponseEntity<List<MyUserResponseDto>> getAllInactiveUsers(){
+        return new ResponseEntity<>(service.getAllInactiveUsers(), HttpStatus.OK);
     }
 }

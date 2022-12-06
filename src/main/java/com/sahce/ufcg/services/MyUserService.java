@@ -1,15 +1,16 @@
 package com.sahce.ufcg.services;
 
 import com.sahce.ufcg.dtos.myUser.MyUserDtoRequest;
-import com.sahce.ufcg.dtos.myUser.MyUserDtoResponse;
+import com.sahce.ufcg.dtos.myUser.MyUserResponseDto;
+import com.sahce.ufcg.exceptions.InactiveUserNotFoundException;
 import com.sahce.ufcg.exceptions.UserNotRegisteredException;
 import com.sahce.ufcg.models.MyUser;
 import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.util.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,7 @@ public class MyUserService {
         passwordEncoder = new PasswordEncoder();
     }
 
-    public MyUserDtoResponse save(MyUserDtoRequest user) throws IllegalArgumentException{
+    public MyUserResponseDto save(MyUserDtoRequest user) throws IllegalArgumentException{
         Boolean activeStatus = false;
         MyUser savedUser = this.repository.save(new MyUser(
                 user.getName(),
@@ -33,7 +34,7 @@ public class MyUserService {
                 user.getUserType(),
                 activeStatus));
 
-        return new MyUserDtoResponse(
+        return new MyUserResponseDto(
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getAddress(),
@@ -42,13 +43,13 @@ public class MyUserService {
                 savedUser.getUserType());
     }
 
-    public MyUserDtoResponse activeUser(/*String email*/ MyUserDtoRequest userDto){
+    public MyUserResponseDto activeUser(/*String email*/ MyUserDtoRequest userDto){
         MyUser user, savedUser;
         user = repository.findByEmail(userDto.getEmail()).orElseThrow(
                 () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
         user.setActive(true);
         savedUser = repository.save(user);
-        return new MyUserDtoResponse(
+        return new MyUserResponseDto(
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getAddress(),
@@ -57,16 +58,31 @@ public class MyUserService {
                 savedUser.getUserType());
     }
 
-    public MyUserDtoResponse getUserByEmail(String email){
+    public MyUserResponseDto getUserByEmail(String email){
         MyUser user = repository.findByEmail(email).orElseThrow(
                 () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
 
-        return new MyUserDtoResponse(
+        return new MyUserResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getAddress(),
                 user.getEmail(),
                 user.getPhone(),
                 user.getUserType());
+    }
+
+    public List<MyUserResponseDto> getAllInactiveUsers() {
+        List<MyUser> inactiveUserList = repository.findAllInactiveUsers()
+                .orElseThrow(() -> new InactiveUserNotFoundException("Não há usuários aguardando aprovação."));
+        List<MyUserResponseDto> resultList = new ArrayList<>();
+        inactiveUserList.forEach(myUser -> resultList.add(new MyUserResponseDto(
+                myUser.getId(),
+                myUser.getName(),
+                myUser.getAddress(),
+                myUser.getEmail(),
+                myUser.getPhone(),
+                myUser.getUserType()
+        )));
+        return resultList;
     }
 }
