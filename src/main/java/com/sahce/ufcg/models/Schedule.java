@@ -78,11 +78,11 @@ public class Schedule implements Serializable {
         this.ownerEmail = ownerEmail;
     }
 
-    public boolean isDisponible() {
+    public boolean getAvailable() {
         return disponible;
     }
 
-    public void setDisponible(boolean disponible) {
+    public void setAvailable(boolean disponible) {
         this.disponible = disponible;
     }
 

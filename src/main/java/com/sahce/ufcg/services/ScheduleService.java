@@ -2,6 +2,7 @@ package com.sahce.ufcg.services;
 
 import com.sahce.ufcg.dtos.schedule.ScheduleRequestDto;
 import com.sahce.ufcg.dtos.schedule.ScheduleResponseDto;
+import com.sahce.ufcg.dtos.scheduling.SchedulingResponseDto;
 import com.sahce.ufcg.exceptions.PlaceNotRegisteredException;
 import com.sahce.ufcg.models.Place;
 import com.sahce.ufcg.models.Schedule;
@@ -14,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sahce.ufcg.util.LocalDateHandler.inputDateIsInDateRange;
 
 @Service
 public class ScheduleService {
@@ -97,5 +102,34 @@ public class ScheduleService {
         );
         dtoList.sort(new ScheduleResponseDtoComparator());
         return dtoList;
+    }
+
+    public List<SchedulingResponseDto> getSchedulingListByPlaceNameAndPeriodRange(
+            String placeName, String strInitialDate, String strFinalDate
+    ){
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+        List<SchedulingResponseDto> schedulingList = new ArrayList<>();
+        String placeNameParam = placeName.toLowerCase();
+        LocalDate initialDate = LocalDate.parse(strInitialDate);
+        LocalDate finalDate = LocalDate.parse(strFinalDate);
+        scheduleList.forEach(schedule ->{
+                    String schedulePlaceName = schedule.getPlace().getName().toLowerCase();
+                    LocalDate scheduleInitialDate = schedule.getInitialDate();
+                    LocalDate scheduleFinalDate = schedule.getFinalDate();
+                    if(
+                            placeNameParam.equals(schedulePlaceName) &&
+                            inputDateIsInDateRange(scheduleInitialDate, scheduleFinalDate, initialDate, finalDate)
+                    ){
+                        schedulingList.add(new SchedulingResponseDto(
+                                schedule.getPlace().getName(),
+                                schedule.getInitialDate().toString(),
+                                schedule.getFinalDate().toString(),
+                                schedule.getOwnerEmail() != null ? schedule.getOwnerEmail().getEmail() : null, /* CORRIGIR ISSO NO SCHEUDLE */
+                                schedule.getAvailable(),
+                                schedule.getTimesByDayList()
+                        ));
+                    }
+                });
+        return schedulingList;
     }
 }
