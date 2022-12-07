@@ -27,7 +27,7 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "owner_id")
     private MyUser ownerEmail;
     @NotNull
-    private boolean disponible;
+    private boolean available;
     @NotNull
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -43,7 +43,7 @@ public class Schedule implements Serializable {
         this.finalDate = finalDate;
         this.timesByDayList = timesByDayList;
         this.ownerEmail = null;
-        this.disponible = true;
+        this.available = true;
         this.deprecated = false;
     }
 
@@ -78,12 +78,12 @@ public class Schedule implements Serializable {
         this.ownerEmail = ownerEmail;
     }
 
-    public boolean getAvailable() {
-        return disponible;
+    public boolean isAvailable() {
+        return available;
     }
 
     public void setAvailable(boolean disponible) {
-        this.disponible = disponible;
+        this.available = disponible;
     }
 
     public Place getPlace() {
