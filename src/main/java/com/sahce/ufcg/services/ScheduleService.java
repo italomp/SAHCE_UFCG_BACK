@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sahce.ufcg.util.LocalDateHandler.inputDateIsInDateRange;
+import static com.sahce.ufcg.util.LocalTimeHandler.inputTimeIsInTimeRange;
 
 @Service
 public class ScheduleService {
@@ -29,8 +30,13 @@ public class ScheduleService {
     private PlaceRepository placeRepository;
 
     public HttpStatus save(ScheduleRequestDto dto){
+        // Verificar se o Place existe e usá-lo posteriormente
         Place place = placeRepository.findByName(dto.getPlaceName()).orElseThrow(
                 () -> new PlaceNotRegisteredException("Não há espaços registrados com esse nome"));
+
+        // Verificar se os períodos e horários não são conflitantes
+        checkDayTimesConflicts();
+
         Schedule newSchedule = new Schedule();
         newSchedule.setPlace(place);
         newSchedule.setInitialDate(dto.getInitialDate());
@@ -47,39 +53,31 @@ public class ScheduleService {
         return HttpStatus.OK;
     }
 
-//    public void checkIfThisScheduleAlreadyExist(Schedule schedule){
-//        schedule.getDaysOfWeek().stream().forEach(
-//                dayOfWeek -> {
-//                    Schedule possibleExistentSchedule = scheduleRespository.checkIfThisScheduleExist(
-//                            schedule.getInitialDate(),
-//                            schedule.getFinalDate(),
-//                            schedule.getInitialTime(),
-//                            schedule.getFinalTime(),
-//                            schedule.getNamePlace().getId(),
-//                            dayOfWeek.ordinal());
-//                    if(schedule.equals(possibleExistentSchedule)){
-//                        throw new ScheduleAlreadyRegistered("Esse horário já exite.");
-//                    }
-//                }
-//        );
-//    }
-//
-//    public void checkConflicts(Schedule schedule){
-//        schedule.getDaysOfWeek().stream().forEach(
-//                dayOfWeek -> {
-//                    Schedule existentSchedule = scheduleRespository.checkConflict(
-//                            schedule.getInitialDate(),
-//                            schedule.getFinalDate(),
-//                            schedule.getInitialTime(),
-//                            schedule.getFinalTime(),
-//                            schedule.getNamePlace().getId(),
-//                            dayOfWeek.ordinal()
-//                    );
-//                    if(existentSchedule != null)
-//                        throw new ScheduleAlreadyRegistered("Conflito com horário existente.");
-//                }
-//        );
-//    }
+    public Boolean checkDayTimesConflicts(Schedule schedule){
+        boolean result = false;
+        List<Schedule> savedScheduleList = scheduleRepository.findFromTheDateForwardByFinalDate(LocalDate.now());
+        LocalDate newScheduleInitialDate = schedule.getInitialDate();
+        LocalDate newScheduleFinalDate = schedule.getFinalDate();
+        savedScheduleList.forEach(savedSchedule -> {
+            LocalDate savedScheduleInitialDate = savedSchedule.getInitialDate();
+            LocalDate savedScheduleFinalDate = savedSchedule.getFinalDate();
+
+            // checar se os períodos são conflitantes (se o período do novo, tá dentro do período de algum velho)
+            if (inputDateIsInDateRange(
+                    newScheduleInitialDate, newScheduleFinalDate, savedScheduleInitialDate, savedScheduleFinalDate
+            )){
+                result = true;
+                break;
+            }
+        });
+        return result;
+    }
+
+    public void checkTimesByDayConflicts(List<TimesByDay> timesByDayList){
+        timesByDayList.forEach(timesByDay -> {
+            timesByDay.getDay()
+        });
+    }
 
     public List<ScheduleResponseDto> getAllByName(String placeName){
         List<Schedule> scheduleList = scheduleRepository.findAll();
@@ -120,6 +118,7 @@ public class ScheduleService {
                             inputDateIsInDateRange(scheduleInitialDate, scheduleFinalDate, initialDate, finalDate)
                     ){
                         schedulingList.add(new SchedulingResponseDto(
+                                schedule.getId(),
                                 schedule.getPlace().getName(),
                                 schedule.getInitialDate().toString(),
                                 schedule.getFinalDate().toString(),
@@ -131,4 +130,7 @@ public class ScheduleService {
                 });
         return schedulingList;
     }
+
+
+
 }

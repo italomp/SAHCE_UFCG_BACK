@@ -12,6 +12,7 @@ import java.util.List;
  * a complexidade do gerenciamento dessas abstrações
  */
 public class SchedulingResponseDto {
+    private long id;
     private String placeName;
     private String initialDate;
     private String finalDate;
@@ -19,15 +20,20 @@ public class SchedulingResponseDto {
     private boolean available;
     private List<TimesByDay> timesByDayList;
     public SchedulingResponseDto(
-            String placeName, String initialDate, String finalDate,
+            long id, String placeName, String initialDate, String finalDate,
             String ownerEmail, boolean available, List<TimesByDay> timesByDayList
     ){
+        this.id = id;
         this.placeName = placeName;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.ownerEmail = ownerEmail;
         this.available = available;
         this.timesByDayList = timesByDayList;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getPlaceName() {

@@ -86,4 +86,7 @@ public interface ScheduleRespository extends JpaRepository<Schedule, Long> {
             "FROM schedule s, place p " +
             "WHERE s.place_id = p.id AND P.name = :pPlaceName", nativeQuery = true)
     List<Schedule> findByPlaceName(@Param("pPlaceName") String placeName);
+
+    @Query(value = "select * from schedule s where s.final_date >= :pFinalDate", nativeQuery = true)
+    List<Schedule> findFromTheDateForwardByFinalDate(@Param("pFinalDate") LocalDate finalDate);
 }
