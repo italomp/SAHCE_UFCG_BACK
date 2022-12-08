@@ -48,6 +48,8 @@ public class Schedule implements Serializable {
     }
 
     public Schedule() {
+        this.available = true;
+        this.deprecated = false;
     }
 
     public long getId() {
