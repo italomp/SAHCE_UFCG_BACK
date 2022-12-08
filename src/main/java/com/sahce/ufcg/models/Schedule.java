@@ -25,7 +25,7 @@ public class Schedule implements Serializable {
     private LocalDate finalDate;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private MyUser ownerEmail;
+    private MyUser owner;
     @NotNull
     private boolean available;
     @NotNull
@@ -42,7 +42,7 @@ public class Schedule implements Serializable {
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.timesByDayList = timesByDayList;
-        this.ownerEmail = null;
+        this.owner = null;
         this.available = true;
         this.deprecated = false;
     }
@@ -72,12 +72,12 @@ public class Schedule implements Serializable {
         this.finalDate = finalDate;
     }
 
-    public MyUser getOwnerEmail() {
-        return ownerEmail;
+    public MyUser getOwner() {
+        return owner;
     }
 
-    public void setOwnerEmail(MyUser ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setOwner(MyUser owner) {
+        this.owner = owner;
     }
 
     public boolean isAvailable() {

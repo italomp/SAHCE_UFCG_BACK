@@ -30,7 +30,7 @@ public class ScheduleController {
     }
 
     // Dates would be in this format: yyyy-mm-dd
-    @GetMapping("/anonymous/schedulings")
+    @GetMapping("/protected/scheduling")
     public ResponseEntity<List<SchedulingResponseDto>> getSchedulingListByPlaceNameAndPeriodRange(
             @RequestParam("placeName") String placeName,
             @RequestParam("initialDate") String initialDate,
@@ -38,5 +38,12 @@ public class ScheduleController {
     ){
         return new ResponseEntity<>(
                 service.getSchedulingListByPlaceNameAndPeriodRange(placeName, initialDate, finalDate), HttpStatus.OK);
+    }
+
+    @PutMapping("/protected/scheduling")
+    public ResponseEntity<HttpStatus> createScheduling(
+            @RequestParam("scheduleId") long scheduleId, @RequestParam("userEmail") String userEmail
+    ){
+        return new ResponseEntity<>(service.createScheduling(scheduleId, userEmail));
     }
 }

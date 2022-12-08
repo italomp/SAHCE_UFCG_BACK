@@ -31,7 +31,7 @@ public class MyUser {
     private UserType userType;
     @NotNull
     private Boolean active;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ownerEmail", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Schedule> schedules;
 

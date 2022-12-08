@@ -5,9 +5,13 @@ import com.sahce.ufcg.dtos.schedule.ScheduleResponseDto;
 import com.sahce.ufcg.dtos.scheduling.SchedulingResponseDto;
 import com.sahce.ufcg.exceptions.ConflictingEntityException;
 import com.sahce.ufcg.exceptions.PlaceNotRegisteredException;
+import com.sahce.ufcg.exceptions.ScheduleNotFoundException;
+import com.sahce.ufcg.exceptions.UserNotRegisteredException;
+import com.sahce.ufcg.models.MyUser;
 import com.sahce.ufcg.models.Place;
 import com.sahce.ufcg.models.Schedule;
 import com.sahce.ufcg.models.TimesByDay;
+import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.repositories.PlaceRepository;
 import com.sahce.ufcg.repositories.ScheduleRespository;
 import com.sahce.ufcg.util.comparators.ScheduleResponseDtoComparator;
@@ -28,6 +32,8 @@ public class ScheduleService {
     private ScheduleRespository scheduleRepository;
     @Autowired
     private PlaceRepository placeRepository;
+    @Autowired
+    private MyUserRepository userRepository;
 
     public HttpStatus save(ScheduleRequestDto dto){
         // Verificar se o Place existe e usá-lo posteriormente
@@ -114,12 +120,24 @@ public class ScheduleService {
                                 schedule.getPlace().getName(),
                                 schedule.getInitialDate().toString(),
                                 schedule.getFinalDate().toString(),
-                                schedule.getOwnerEmail() != null ? schedule.getOwnerEmail().getEmail() : null, /* CORRIGIR ISSO NO SCHEUDLE */
+                                schedule.getOwner() != null ? schedule.getOwner().getEmail() : null, /* CORRIGIR ISSO NO SCHEUDLE */
                                 schedule.isAvailable(),
                                 schedule.getTimesByDayList()
                         ));
                     }
                 });
         return schedulingList;
+    }
+
+    public HttpStatus createScheduling(long scheduleId, String userEmail) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () ->new ScheduleNotFoundException("Schedule não encontradp"));
+        MyUser user = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new UserNotRegisteredException("Usuário não registrado"));
+
+        schedule.setOwner(user);
+        schedule.setAvailable(false);
+        scheduleRepository.save(schedule);
+        return HttpStatus.OK;
     }
 }
