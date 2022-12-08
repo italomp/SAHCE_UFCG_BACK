@@ -58,12 +58,6 @@ public class ScheduleService {
 
     public void isScheduleConflicts(Schedule schedule){
         for(TimesByDay timesByDay: schedule.getTimesByDayList()){
-            System.out.println("SCHEDULE RECEBIDO: " + schedule.getInitialDate() + " - " +
-                    schedule.getFinalDate() + " - " +
-                    timesByDay.getDay().ordinal() + " - " +
-                    timesByDay.getInitialTime() + " - " +
-                    timesByDay.getFinalTime() + " - " +
-                    schedule.getPlace().getName());
             List<Schedule> savedScheduleList = scheduleRepository.findFromTheDateForwardByFinalDate(
                     schedule.getInitialDate(),
                     schedule.getFinalDate(),
@@ -72,7 +66,6 @@ public class ScheduleService {
                     timesByDay.getFinalTime(),
                     schedule.getPlace().getName());
             if (savedScheduleList.size() > 0) {
-                savedScheduleList.forEach(schedule1 -> System.out.println("schedule1.getId(): " + schedule1.getId()));
                 throw new ConflictingEntityException("O novo horário é conflitante com algum horário existente.");
             }
         }
