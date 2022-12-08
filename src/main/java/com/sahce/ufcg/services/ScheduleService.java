@@ -3,6 +3,7 @@ package com.sahce.ufcg.services;
 import com.sahce.ufcg.dtos.schedule.ScheduleRequestDto;
 import com.sahce.ufcg.dtos.schedule.ScheduleResponseDto;
 import com.sahce.ufcg.dtos.scheduling.SchedulingResponseDto;
+import com.sahce.ufcg.exceptions.ConflictingEntityException;
 import com.sahce.ufcg.exceptions.PlaceNotRegisteredException;
 import com.sahce.ufcg.models.Place;
 import com.sahce.ufcg.models.Schedule;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sahce.ufcg.util.LocalDateHandler.inputDateIsInDateRange;
-import static com.sahce.ufcg.util.LocalTimeHandler.inputTimeIsInTimeRange;
 
 @Service
 public class ScheduleService {
@@ -34,9 +34,7 @@ public class ScheduleService {
         Place place = placeRepository.findByName(dto.getPlaceName()).orElseThrow(
                 () -> new PlaceNotRegisteredException("Não há espaços registrados com esse nome"));
 
-        // Verificar se os períodos e horários não são conflitantes
-        checkDayTimesConflicts();
-
+        // Preparando o newSchedule
         Schedule newSchedule = new Schedule();
         newSchedule.setPlace(place);
         newSchedule.setInitialDate(dto.getInitialDate());
@@ -49,34 +47,35 @@ public class ScheduleService {
                 }
         );
         newSchedule.setTimesByDayList(timesByDayList);
+
+        // Verificar se os períodos e horários não são conflitantes
+        isScheduleConflicts(newSchedule);
+
+        // Salvando
         scheduleRepository.save(newSchedule);
         return HttpStatus.OK;
     }
 
-    public Boolean checkDayTimesConflicts(Schedule schedule){
-        boolean result = false;
-        List<Schedule> savedScheduleList = scheduleRepository.findFromTheDateForwardByFinalDate(LocalDate.now());
-        LocalDate newScheduleInitialDate = schedule.getInitialDate();
-        LocalDate newScheduleFinalDate = schedule.getFinalDate();
-        savedScheduleList.forEach(savedSchedule -> {
-            LocalDate savedScheduleInitialDate = savedSchedule.getInitialDate();
-            LocalDate savedScheduleFinalDate = savedSchedule.getFinalDate();
-
-            // checar se os períodos são conflitantes (se o período do novo, tá dentro do período de algum velho)
-            if (inputDateIsInDateRange(
-                    newScheduleInitialDate, newScheduleFinalDate, savedScheduleInitialDate, savedScheduleFinalDate
-            )){
-                result = true;
-                break;
+    public void isScheduleConflicts(Schedule schedule){
+        for(TimesByDay timesByDay: schedule.getTimesByDayList()){
+            System.out.println("SCHEDULE RECEBIDO: " + schedule.getInitialDate() + " - " +
+                    schedule.getFinalDate() + " - " +
+                    timesByDay.getDay().ordinal() + " - " +
+                    timesByDay.getInitialTime() + " - " +
+                    timesByDay.getFinalTime() + " - " +
+                    schedule.getPlace().getName());
+            List<Schedule> savedScheduleList = scheduleRepository.findFromTheDateForwardByFinalDate(
+                    schedule.getInitialDate(),
+                    schedule.getFinalDate(),
+                    timesByDay.getDay().ordinal(),
+                    timesByDay.getInitialTime(),
+                    timesByDay.getFinalTime(),
+                    schedule.getPlace().getName());
+            if (savedScheduleList.size() > 0) {
+                savedScheduleList.forEach(schedule1 -> System.out.println("schedule1.getId(): " + schedule1.getId()));
+                throw new ConflictingEntityException("O novo horário é conflitante com algum horário existente.");
             }
-        });
-        return result;
-    }
-
-    public void checkTimesByDayConflicts(List<TimesByDay> timesByDayList){
-        timesByDayList.forEach(timesByDay -> {
-            timesByDay.getDay()
-        });
+        }
     }
 
     public List<ScheduleResponseDto> getAllByName(String placeName){
@@ -130,7 +129,4 @@ public class ScheduleService {
                 });
         return schedulingList;
     }
-
-
-
 }
