@@ -14,26 +14,18 @@ public class ScheduleRequestDto implements Serializable {
     private String placeName;
     private String ownerEmail;
     private  Map<DayOfWeek, TimesByDay> timesByDayMap;
-
-    public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, Map<DayOfWeek,
-            TimesByDay> timesByDayMap, String placeName, String ownerEmail) {
-        this.initialDate = initialDate;
-        this.finalDate = finalDate;
-        this.timesByDayMap = timesByDayMap;
-        this.placeName = placeName;
-        this.ownerEmail = ownerEmail;
-    }
-
-    public ScheduleRequestDto(LocalDate initialDate, LocalDate finalDate, Map<DayOfWeek,
-            TimesByDay> timesByDayMap, String placeName) {
-        this.initialDate = initialDate;
-        this.finalDate = finalDate;
-        this.timesByDayMap = timesByDayMap;
-        this.placeName = placeName;
-        this.ownerEmail = null;
-    }
+    private LocalDate releaseInternalCommunity;
+    private LocalDate releaseExternalCommunity;
 
     public ScheduleRequestDto() {
+    }
+
+    public LocalDate getReleaseInternalCommunity() {
+        return releaseInternalCommunity;
+    }
+
+    public LocalDate getReleaseExternalCommunity() {
+        return releaseExternalCommunity;
     }
 
     public LocalDate getInitialDate() {
@@ -48,31 +40,16 @@ public class ScheduleRequestDto implements Serializable {
         return finalDate;
     }
 
-    public void setFinalDate(LocalDate finalDate) {
-        this.finalDate = finalDate;
-    }
-
     public String getOwnerEmail() {
         return ownerEmail;
-    }
-
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
     }
 
     public String getPlaceName() {
         return placeName;
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
-    }
-
     public Map<DayOfWeek, TimesByDay> getTimesByDayMap() {
         return timesByDayMap;
     }
 
-    public void setTimesByDayMap(Map<DayOfWeek, TimesByDay> timesByDayMap) {
-        this.timesByDayMap = timesByDayMap;
-    }
 }

@@ -23,6 +23,10 @@ public class Schedule implements Serializable {
     private LocalDate initialDate;
     @NotNull
     private LocalDate finalDate;
+    @NotNull
+    private LocalDate releaseInternalCommunity;
+    @NotNull
+    private LocalDate releaseExternalCommunity;
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private MyUser owner;
@@ -35,17 +39,6 @@ public class Schedule implements Serializable {
     private List<TimesByDay> timesByDayList;
     @NotNull
     private boolean deprecated;
-
-    public Schedule(Place place, LocalDate initialDate, LocalDate finalDate,
-                    List<TimesByDay> timesByDayList) {
-        this.place = place;
-        this.initialDate = initialDate;
-        this.finalDate = finalDate;
-        this.timesByDayList = timesByDayList;
-        this.owner = null;
-        this.available = true;
-        this.deprecated = false;
-    }
 
     public Schedule() {
         this.available = true;
@@ -110,6 +103,22 @@ public class Schedule implements Serializable {
 
     public void setTimesByDayList(List<TimesByDay> timesByDayList) {
         this.timesByDayList = timesByDayList;
+    }
+
+    public LocalDate getReleaseInternalCommunity() {
+        return releaseInternalCommunity;
+    }
+
+    public void setReleaseInternalCommunity(LocalDate releaseInternalCommunity) {
+        this.releaseInternalCommunity = releaseInternalCommunity;
+    }
+
+    public LocalDate getReleaseExternalCommunity() {
+        return releaseExternalCommunity;
+    }
+
+    public void setReleaseExternalCommunity(LocalDate releaseExternalCommunity) {
+        this.releaseExternalCommunity = releaseExternalCommunity;
     }
 
     @Override

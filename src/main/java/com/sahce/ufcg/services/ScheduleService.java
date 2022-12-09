@@ -45,6 +45,8 @@ public class ScheduleService {
         newSchedule.setPlace(place);
         newSchedule.setInitialDate(dto.getInitialDate());
         newSchedule.setFinalDate(dto.getFinalDate());
+        newSchedule.setReleaseInternalCommunity(dto.getReleaseInternalCommunity());
+        newSchedule.setReleaseExternalCommunity(dto.getReleaseExternalCommunity());
         List<TimesByDay> timesByDayList = new ArrayList<>();
         dto.getTimesByDayMap().values().forEach(
                 timesByDay -> {
@@ -131,7 +133,7 @@ public class ScheduleService {
 
     public HttpStatus createScheduling(long scheduleId, String userEmail) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () ->new ScheduleNotFoundException("Schedule não encontradp"));
+                () ->new ScheduleNotFoundException("Schedule não encontrado"));
         MyUser user = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new UserNotRegisteredException("Usuário não registrado"));
 
