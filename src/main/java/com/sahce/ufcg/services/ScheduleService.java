@@ -138,12 +138,12 @@ public class ScheduleService {
         if(!user.isAdmin()){
             checkIfBelongsToTheCommunity(schedule, user);
             checkPeriod(schedule, user);
-            checkIfItIsavailabble(schedule);
             if(isWeekly(schedule)){
                 checkIfTheUserHaveAnotherWeeklySchedulingInThisPlace(
                         schedule, user.getId(), schedule.getPlace().getId());
             }
         }
+        checkIfItIsavailabble(schedule);
 
         schedule.setOwner(user);
         schedule.setAvailable(false);
