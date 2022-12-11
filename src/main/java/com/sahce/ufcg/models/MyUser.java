@@ -144,6 +144,18 @@ public class MyUser {
                 this.userType + " status:" + this.active;
     }
 
+    public boolean isAdmin(){
+        return this.userType == UserType.ADMIN;
+    }
+
+    public boolean isInternalCommunity(){
+        return this.userType == UserType.INTERNAL_USER;
+    }
+
+    public boolean isExternalCommunity(){
+        return this.userType == UserType.EXTERNAL_USER;
+    }
+
     public enum UserType{
         ADMIN, EXTERNAL_USER, INTERNAL_USER
     }
