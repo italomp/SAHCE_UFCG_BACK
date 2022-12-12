@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface MyUserRepository extends JpaRepository<MyUser, Long> {
-    @Query(value = "select * from my_user  u where u.email = :pemail", nativeQuery = true)
-    Optional<MyUser> findByEmail(@Param("pemail") String email);
+    @Query(value = "select * from my_user u where lower(u.email) = lower(:pEmail)", nativeQuery = true)
+    Optional<MyUser> findByEmail(@Param("pEmail") String email);
 
     @Query(value = "select * from my_user u where u.active = false", nativeQuery = true)
     Optional<List<MyUser>> findAllInactiveUsers();

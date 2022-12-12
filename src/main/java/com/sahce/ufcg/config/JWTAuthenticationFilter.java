@@ -1,7 +1,7 @@
 package com.sahce.ufcg.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sahce.ufcg.dtos.myUser.MyUserDtoRequest;
+import com.sahce.ufcg.dtos.myUser.MyUserLoginDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,8 +32,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            MyUserDtoRequest user = new ObjectMapper()
-                    .readValue(req.getInputStream(), MyUserDtoRequest.class);
+            MyUserLoginDto user = new ObjectMapper()
+                    .readValue(req.getInputStream(), MyUserLoginDto.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

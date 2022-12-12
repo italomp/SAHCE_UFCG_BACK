@@ -4,6 +4,7 @@ import com.sahce.ufcg.dtos.myUser.MyUserResponseDto;
 import com.sahce.ufcg.dtos.myUser.MyUserDtoRequest;
 import com.sahce.ufcg.services.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -38,5 +39,10 @@ public class MyUserController {
     @GetMapping("/admin/users/inactive")
     public ResponseEntity<List<MyUserResponseDto>> getAllInactiveUsers(){
         return new ResponseEntity<>(service.getAllInactiveUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/anonymous/users/document")
+    public ResponseEntity<byte[]> getUserDocumentPicture(@RequestParam("userEmail") String email){
+        return new ResponseEntity(service.getUserDocumentPicture(email), HttpStatus.OK);
     }
 }

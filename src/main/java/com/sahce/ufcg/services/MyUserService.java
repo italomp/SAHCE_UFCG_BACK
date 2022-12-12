@@ -7,7 +7,9 @@ import com.sahce.ufcg.exceptions.UserNotRegisteredException;
 import com.sahce.ufcg.models.MyUser;
 import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.util.PasswordEncoder;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class MyUserService {
                 user.getPhone(),
                 user.getUserType(),
                 activeStatus,
-                user.getDocumentImage()));
+                user.getDocumentPicture()));
 
         return new MyUserResponseDto(
                 savedUser.getId(),
@@ -85,5 +87,12 @@ public class MyUserService {
                 myUser.getUserType()
         )));
         return resultList;
+    }
+
+    public byte[] getUserDocumentPicture(String email) {
+        System.out.println(email);
+        MyUser user = repository.findByEmail(email).orElseThrow(
+                () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
+        return user.getDocumentPicture();
     }
 }

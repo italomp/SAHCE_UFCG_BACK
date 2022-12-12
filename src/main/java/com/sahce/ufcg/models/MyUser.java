@@ -26,14 +26,14 @@ public class MyUser {
     @Column(unique = true)
     private String phone;
     @NotNull
-    private byte[] documentPicture;
-    @NotNull
     private UserType userType;
     @NotNull
     private Boolean active;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", orphanRemoval = true)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Schedule> schedules;
+    @NotNull
+    private byte[] documentPicture;
 
     public MyUser() {
     }
