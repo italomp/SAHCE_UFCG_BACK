@@ -21,7 +21,7 @@ public class PlaceController {
         return new ResponseEntity<>(service.save(place));
     }
 
-    @GetMapping("/admin/places")
+    @GetMapping("/protected/places")
     public ResponseEntity<List<PlaceResponseDto>> getAll(){
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
