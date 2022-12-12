@@ -120,6 +120,8 @@ public class ScheduleService {
                                 schedule.getPlace().getName(),
                                 schedule.getInitialDate().toString(),
                                 schedule.getFinalDate().toString(),
+                                schedule.getReleaseInternalCommunity().toString(),
+                                schedule.getReleaseExternalCommunity().toString(),
                                 schedule.getOwner() != null ? schedule.getOwner().getEmail() : null, /* CORRIGIR ISSO NO SCHEUDLE */
                                 schedule.isAvailable(),
                                 schedule.getTimesByDayList()
