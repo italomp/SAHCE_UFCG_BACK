@@ -32,7 +32,8 @@ public class MyUserService {
                 user.getEmail(),
                 user.getPhone(),
                 user.getUserType(),
-                activeStatus));
+                activeStatus,
+                user.getDocumentImage()));
 
         return new MyUserResponseDto(
                 savedUser.getId(),

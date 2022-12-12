@@ -1,7 +1,6 @@
 package com.sahce.ufcg.dtos.myUser;
 
 import com.sahce.ufcg.models.MyUser;
-import com.sahce.ufcg.models.MyUser.UserType;
 
 import java.io.Serializable;
 
@@ -11,23 +10,19 @@ public class MyUserDtoRequest implements Serializable {
     private final String address;
     private final String email;
     private final String phone;
-    private MyUser.UserType userType;
-    public MyUserDtoRequest(String name, String password, String address, String email, String phone, MyUser.UserType userType) {
+    private final MyUser.UserType userType;
+    private final byte[] documentImage;
+
+
+    public MyUserDtoRequest(String name, String password, String address, String email,
+                            String phone, MyUser.UserType userType, byte[] documentImage) {
         this.name = name;
         this.password = password;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
-    }
-
-    public MyUserDtoRequest(){
-        this.name = null;
-        this.address = null;
-        this.phone = null;
-        this.email = null;
-        this.userType = null;
-        this.password = null;
+        this.documentImage = documentImage;
     }
    
     public String getName() {
@@ -52,5 +47,9 @@ public class MyUserDtoRequest implements Serializable {
 
     public MyUser.UserType getUserType() {
         return userType;
+    }
+
+    public byte[] getDocumentImage() {
+        return documentImage;
     }
 }

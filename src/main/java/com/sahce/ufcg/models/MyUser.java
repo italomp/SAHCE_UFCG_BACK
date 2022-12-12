@@ -25,7 +25,7 @@ public class MyUser {
     @NotNull
     @Column(unique = true)
     private String phone;
-    //@NotNull
+    @NotNull
     private byte[] documentPicture;
     @NotNull
     private UserType userType;
@@ -39,7 +39,7 @@ public class MyUser {
     }
 
     public MyUser(String name, String password, String address, String email,
-                  String phone, UserType userType, Boolean active) {
+                  String phone, UserType userType, Boolean active, byte[] documentPicture) {
         this.name = name;
         this.password = password;
         this.address = address;
@@ -48,6 +48,7 @@ public class MyUser {
         this.userType = userType;
         this.active = active;
         this.schedules = new ArrayList<>();
+        this.documentPicture = documentPicture;
     }
 
     public MyUser(String name, String password, String address, String email, String phone, byte[] documentPicture) {
