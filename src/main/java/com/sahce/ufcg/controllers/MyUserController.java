@@ -36,7 +36,7 @@ public class MyUserController {
         return new ResponseEntity<>(service.uploadUserDocumentPicture(documentPicture, userEmail));
     }
 
-    @GetMapping("/admin/users/documentPicture")
+    @GetMapping("/anonymous/users/documentPicture")
     public ResponseEntity<?> getDocumentPicture(@RequestParam("userEmail") String userEmail){
         byte[] documentPicture = service.downloadDocumentPicture(userEmail);
         return ResponseEntity
