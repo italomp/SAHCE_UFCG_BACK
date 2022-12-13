@@ -88,13 +88,6 @@ public class MyUserService {
         return resultList;
     }
 
-    public byte[] getUserDocumentPicture(String email) {
-        System.out.println(email);
-        MyUser user = repository.findByEmail(email).orElseThrow(
-                () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
-        return user.getDocumentPicture();
-    }
-
     public HttpStatus uploadUserDocumentPicture(MultipartFile documentPicture, String userEmail) throws IOException {
         MyUser user = repository.findByEmail(userEmail).orElseThrow(
                 () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));

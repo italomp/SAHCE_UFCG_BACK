@@ -38,7 +38,7 @@ public class MyUserController {
 
     @GetMapping("/admin/users/documentPicture")
     public ResponseEntity<?> getDocumentPicture(@RequestParam("userEmail") String userEmail){
-        byte[] documentPicture = service.getUserDocumentPicture(userEmail);
+        byte[] documentPicture = service.downloadDocumentPicture(userEmail);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -58,10 +58,5 @@ public class MyUserController {
     @GetMapping("/admin/users/inactive")
     public ResponseEntity<List<MyUserResponseDto>> getAllInactiveUsers(){
         return new ResponseEntity<>(service.getAllInactiveUsers(), HttpStatus.OK);
-    }
-
-    @GetMapping("/anonymous/users/document")
-    public ResponseEntity<byte[]> getUserDocumentPicture(@RequestParam("userEmail") String email){
-        return new ResponseEntity(service.getUserDocumentPicture(email), HttpStatus.OK);
     }
 }
