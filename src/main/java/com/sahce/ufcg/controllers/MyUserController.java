@@ -28,7 +28,7 @@ public class MyUserController {
         return new ResponseEntity<>(service.save(user), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/protected/users/documentPicture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/anonymous/users/documentPicture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> saveDocumentPicture(
             @RequestParam("documentPicture") MultipartFile documentPicture,
             @RequestParam("userEmail") String userEmail
