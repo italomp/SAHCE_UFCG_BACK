@@ -39,27 +39,28 @@ public class MyUser {
     }
 
     public MyUser(String name, String password, String address, String email,
-                  String phone, UserType userType, Boolean active, byte[] documentPicture) {
+                  String phone, UserType userType) {
         this.name = name;
         this.password = password;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
-        this.active = active;
+        this.active = false;
         this.schedules = new ArrayList<>();
-        this.documentPicture = documentPicture;
+        this.documentPicture = null;
     }
 
-    public MyUser(String name, String password, String address, String email, String phone, byte[] documentPicture) {
-        this.name = name;
-        this.password = password;
-        this.address = address;
-        this.email = email;
-        this.phone = phone;
-        this.documentPicture = documentPicture;
-        this.schedules = new ArrayList<>();
-    }
+
+    /*
+    user.getName(),
+    passwordEncoder.encode(user.getPassword()),
+    user.getAddress(),
+    user.getEmail(),
+    user.getPhone(),
+    user.getUserType(),
+    activeStatus)
+    */
 
     public long getId() {
         return id;

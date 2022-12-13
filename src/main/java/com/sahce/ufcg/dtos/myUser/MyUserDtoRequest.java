@@ -11,18 +11,16 @@ public class MyUserDtoRequest implements Serializable {
     private final String email;
     private final String phone;
     private final MyUser.UserType userType;
-    private final byte[] documentPicture;
 
 
     public MyUserDtoRequest(String name, String password, String address, String email,
-                            String phone, MyUser.UserType userType, byte[] documentPicture) {
+                            String phone, MyUser.UserType userType) {
         this.name = name;
         this.password = password;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
-        this.documentPicture = documentPicture;
     }
    
     public String getName() {
@@ -48,8 +46,5 @@ public class MyUserDtoRequest implements Serializable {
     public MyUser.UserType getUserType() {
         return userType;
     }
-
-    public byte[] getDocumentPicture() {
-        return documentPicture;
-    }
+    
 }

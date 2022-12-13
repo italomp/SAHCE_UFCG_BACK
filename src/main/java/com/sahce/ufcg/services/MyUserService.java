@@ -7,11 +7,13 @@ import com.sahce.ufcg.exceptions.UserNotRegisteredException;
 import com.sahce.ufcg.models.MyUser;
 import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.util.PasswordEncoder;
-import org.apache.catalina.User;
+import com.sahce.ufcg.util.PictureUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,16 +28,13 @@ public class MyUserService {
     }
 
     public MyUserResponseDto save(MyUserDtoRequest user) throws IllegalArgumentException{
-        Boolean activeStatus = false;
         MyUser savedUser = this.repository.save(new MyUser(
                 user.getName(),
                 passwordEncoder.encode(user.getPassword()),
                 user.getAddress(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getUserType(),
-                activeStatus,
-                user.getDocumentPicture()));
+                user.getUserType()));
 
         return new MyUserResponseDto(
                 savedUser.getId(),
@@ -94,5 +93,20 @@ public class MyUserService {
         MyUser user = repository.findByEmail(email).orElseThrow(
                 () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
         return user.getDocumentPicture();
+    }
+
+    public HttpStatus uploadUserDocumentPicture(MultipartFile documentPicture, String userEmail) throws IOException {
+        MyUser user = repository.findByEmail(userEmail).orElseThrow(
+                () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
+        user.setDocumentPicture(PictureUtils.compressPicture(documentPicture.getBytes()));
+        repository.save(user);
+        return HttpStatus.OK;
+    }
+
+    public byte[] downloadDocumentPicture(String userEmail){
+        MyUser user = repository.findByEmail(userEmail).orElseThrow(
+                () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
+        byte[] documentPicture = PictureUtils.decompressPicture(user.getDocumentPicture());
+        return documentPicture;
     }
 }

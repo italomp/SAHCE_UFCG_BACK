@@ -4,12 +4,14 @@ import com.sahce.ufcg.dtos.myUser.MyUserResponseDto;
 import com.sahce.ufcg.dtos.myUser.MyUserDtoRequest;
 import com.sahce.ufcg.services.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,6 +26,23 @@ public class MyUserController {
     @PostMapping("/anonymous/users")
     public ResponseEntity<MyUserResponseDto> save(@RequestBody MyUserDtoRequest user){
         return new ResponseEntity<>(service.save(user), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/protected/users/documentPicture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpStatus> saveDocumentPicture(
+            @RequestParam("documentPicture") MultipartFile documentPicture,
+            @RequestParam("userEmail") String userEmail
+    ) throws IOException {
+        return new ResponseEntity<>(service.uploadUserDocumentPicture(documentPicture, userEmail));
+    }
+
+    @GetMapping("/admin/users/documentPicture")
+    public ResponseEntity<?> getDocumentPicture(@RequestParam("userEmail") String userEmail){
+        byte[] documentPicture = service.getUserDocumentPicture(userEmail);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(documentPicture);
     }
 
     @PutMapping("/admin/users")
