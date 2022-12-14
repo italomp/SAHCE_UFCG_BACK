@@ -173,7 +173,7 @@ public class ScheduleService {
                 () -> new UserNotRegisteredException("Usuário não registrado"));
 
         String ownerEmail = schedule.getOwner().getEmail().toLowerCase();
-        if(!user.isAdmin() || !ownerEmail.equals(userEmail.toLowerCase()))
+        if(!user.isAdmin() && !ownerEmail.equals(userEmail.toLowerCase()))
             throw new UnauthorizedUserException("Usuário sem permissão para realizar o cancelamento.");
 
         schedule.setOwner(null);
