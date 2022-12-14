@@ -4,6 +4,7 @@ import com.sahce.ufcg.dtos.schedule.ScheduleRequestDto;
 import com.sahce.ufcg.dtos.schedule.ScheduleResponseDto;
 import com.sahce.ufcg.dtos.scheduling.SchedulingResponseDto;
 import com.sahce.ufcg.services.ScheduleService;
+import com.sahce.ufcg.util.SchedulingOperationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import java.util.List;
 public class ScheduleController {
     @Autowired
     private ScheduleService service;
-    // se preparar para busca case insensitve e para salvar case insensitive
     @PostMapping("/admin/schedules")
     public ResponseEntity<HttpStatus> save(@RequestBody ScheduleRequestDto dto){
         service.save(dto);
@@ -25,7 +25,6 @@ public class ScheduleController {
 
     @GetMapping("/admin/schedules")
     public ResponseEntity<List<ScheduleResponseDto>> getAll(@RequestParam("placeName") String placeName){
-        System.out.println(placeName);
         return new ResponseEntity<>(service.getAllByName(placeName), HttpStatus.OK);
     }
 
@@ -42,8 +41,9 @@ public class ScheduleController {
 
     @PutMapping("/protected/scheduling")
     public ResponseEntity<HttpStatus> createScheduling(
-            @RequestParam("scheduleId") long scheduleId, @RequestParam("userEmail") String userEmail
+            @RequestParam("scheduleId") long scheduleId, @RequestParam("userEmail") String userEmail,
+            @RequestParam("schedulingOperation") SchedulingOperationUtils schedulingOperation
     ){
-        return new ResponseEntity<>(service.createScheduling(scheduleId, userEmail));
+        return new ResponseEntity<>(service.createOrCancelScheduling(scheduleId, userEmail, schedulingOperation));
     }
 }

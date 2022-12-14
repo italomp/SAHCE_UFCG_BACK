@@ -11,6 +11,7 @@ import com.sahce.ufcg.models.TimesByDay;
 import com.sahce.ufcg.repositories.MyUserRepository;
 import com.sahce.ufcg.repositories.PlaceRepository;
 import com.sahce.ufcg.repositories.ScheduleRespository;
+import com.sahce.ufcg.util.SchedulingOperationUtils;
 import com.sahce.ufcg.util.comparators.ScheduleResponseDtoComparator;
 import com.sahce.ufcg.util.comparators.TimesByDayComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,18 @@ public class ScheduleService {
         return schedulingList;
     }
 
+    public HttpStatus createOrCancelScheduling(long scheduleId, String userEmail, SchedulingOperationUtils operation) {
+        if (operation == SchedulingOperationUtils.CREATE) {
+            createScheduling(scheduleId, userEmail);
+            return HttpStatus.OK;
+        }
+        else if (operation == SchedulingOperationUtils.CANCEL){
+            cancelScheduling(scheduleId, userEmail);
+            return HttpStatus.OK;
+        }
+        return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
     public HttpStatus createScheduling(long scheduleId, String userEmail) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleNotFoundException("Schedule não encontrado"));
@@ -149,6 +162,22 @@ public class ScheduleService {
 
         schedule.setOwner(user);
         schedule.setAvailable(false);
+        scheduleRepository.save(schedule);
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus cancelScheduling(long scheduleId, String userEmail){
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleNotFoundException("Schedule não encontrado"));
+        MyUser user = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new UserNotRegisteredException("Usuário não registrado"));
+
+        String ownerEmail = schedule.getOwner().getEmail().toLowerCase();
+        if(!user.isAdmin() || !ownerEmail.equals(userEmail.toLowerCase()))
+            throw new UnauthorizedUserException("Usuário sem permissão para realizar o cancelamento.");
+
+        schedule.setOwner(null);
+        schedule.setAvailable(true);
         scheduleRepository.save(schedule);
         return HttpStatus.OK;
     }
