@@ -46,8 +46,8 @@ public class MyUserController {
     }
 
     @PutMapping("/admin/users")
-    public ResponseEntity<MyUserResponseDto> activeUser(@RequestBody MyUserDtoRequest user){
-        return new ResponseEntity<>(service.activeUser(user), HttpStatus.OK);
+    public ResponseEntity<HttpStatus> activeUser(@RequestParam("userEmail") String userEmail){
+        return new ResponseEntity<>(service.activeUser(userEmail));
     }
 
     @GetMapping("/protected/users/{email}")

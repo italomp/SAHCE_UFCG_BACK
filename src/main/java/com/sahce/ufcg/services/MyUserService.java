@@ -45,19 +45,13 @@ public class MyUserService {
                 savedUser.getUserType());
     }
 
-    public MyUserResponseDto activeUser(/*String email*/ MyUserDtoRequest userDto){
+    public HttpStatus activeUser(String userEmail){
         MyUser user, savedUser;
-        user = repository.findByEmail(userDto.getEmail()).orElseThrow(
+        user = repository.findByEmail(userEmail).orElseThrow(
                 () -> new UserNotRegisteredException("Não existe usuário cadastrado com esse e-mail."));
         user.setActive(true);
-        savedUser = repository.save(user);
-        return new MyUserResponseDto(
-                savedUser.getId(),
-                savedUser.getName(),
-                savedUser.getAddress(),
-                savedUser.getEmail(),
-                savedUser.getPhone(),
-                savedUser.getUserType());
+        repository.save(user);
+        return HttpStatus.OK;
     }
 
     public MyUserResponseDto getUserByEmail(String email){
